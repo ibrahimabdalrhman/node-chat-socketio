@@ -1,16 +1,14 @@
 const express = require("express");
-const dotenv=require('dotenv');
-dotenv.config({path:'.env'})
+const dotenv = require("dotenv");
+dotenv.config({ path: ".env" });
 const app = express();
 const cors = require("cors");
 app.use(cors());
+const db = require("./config/db");
+db();
+const userRoute = require("./routes/userRoute");
+app.use(express.json());
+app.use("/api/user", userRoute);
 
-const data=require('./data/data')
-app.get('/api/chats',(req,res)=>{
-    res.send(data)
-})
-
-
-
-const port=process.env.PORT
+const port = process.env.PORT;
 app.listen(port, () => console.log(`server running on port ${port}`));

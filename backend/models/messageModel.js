@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Message Schema
 const MessageSchema = new Schema({
   sender: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Assuming you have a User schema
+    ref: 'User', 
     required: true
   },
   chat: {
@@ -13,9 +12,10 @@ const MessageSchema = new Schema({
     ref: 'Chat',
     required: true
   },
-  message: {
+  content: {
     type: String,
-    required: true
+    required: true,
+    trim:true
   },
 
 },{

@@ -2,9 +2,13 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
-// User Schema
 const UserSchema = new Schema(
   {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     username: {
       type: String,
       required: true,
@@ -25,12 +29,7 @@ const UserSchema = new Schema(
     avatar: {
       type: String,
       default:
-        "https://i0.wp.com/crawleydistrictscouts.co.uk/wp-content/uploads/2021/06/413-4139803_unknown-profile-profile-picture-unknown.jpg?ssl=1", // URL or path to the user's profile picture (optional)
-    },
-    roles: {
-      type: [String],
-      enum: ["user", "admin"],
-      default: ["user"],
+        "https://i0.wp.com/crawleydistrictscouts.co.uk/wp-content/uploads/2021/06/413-4139803_unknown-profile-profile-picture-unknown.jpg?ssl=1",
     },
   },
   {
