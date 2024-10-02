@@ -6,9 +6,21 @@ const cors = require("cors");
 app.use(cors());
 const db = require("./config/db");
 db();
-const userRoute = require("./routes/userRoute");
 app.use(express.json());
+const ApiError = require("./utils/apiError");
+const errorMiddleware = require("./middlewares/errorMiddleware");
+const authRoute = require("./routes/authRoute");
+const userRoute = require("./routes/userRoute");
+app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+
+app.all("*", (req, res, next) => {
+  next(new ApiError(`can't find this page ${req.url}`, 404));
+});
+
+//Global error middleware
+app.use(errorMiddleware);
+
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`server running on port ${port}`));
