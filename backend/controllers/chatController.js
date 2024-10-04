@@ -110,20 +110,34 @@ exports.RemoveGroup = asyncHandler(async (req, res) => {
   res.status(200).json(updatedChat);
 });
 
-exports.addToGroup = asyncHandler(async (req, res) => {
+exports.addToGroup = asyncHandler(async (req, res, next) => {
   const { chatId, userId } = req.body;
 
-  const validUser = await User.findById(userId);
-  if (!validUser) {
-    return next(new ApiError(`User ID ${userId} not found`, 404));
+  if (!chatId || !userId) {
+    return next(new ApiError("Chat ID and User ID are required", 400));
   }
-  const updatedChat = await Chat.findByIdAndUpdate(
-    chatId,
-    { $push: { users: userId } },
-    { new: true }
-  ).populate("users", "-password");
 
-  res.status(200).json(updatedChat);
+  const chatGroup = await Chat.findById(chatId);
+
+  if (!chatGroup) {
+    return next(new ApiError("Chat group not found", 404));
+  }
+
+  if (chatGroup.users.includes(userId)) {
+    return next(new ApiError("User already exists in the group", 400));
+  }
+
+  if (chatGroup.groupAdmin.toString() !== req.user._id.toString()) {
+    return next(new ApiError("Only the group admin can remove users", 403));
+  }
+
+  chatGroup.users.push(userId);
+  await chatGroup.save();
+  const updatedGroupChat = await Chat.findById(chatId)
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  res.status(200).json(updatedGroupChat);
 });
 
 exports.removeUserFromGroup = asyncHandler(async (req, res, next) => {
