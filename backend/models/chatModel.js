@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Chat Schema
 const ChatSchema = new Schema({
-  chatNmae: {
+  chatName: {
     type: String,
     trim:true
   },

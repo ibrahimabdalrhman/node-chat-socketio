@@ -27,4 +27,18 @@ exports.AllUsers = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.UserByUsername = asyncHandler(async () => {});
+exports.UserByUsername = asyncHandler(async (req, res, nest) => {
+  const username = req.params.username;
+  const user = await User.findOne({ username });
+  res.status(200).json({
+    data: user,
+  });
+});
+
+exports.profile = asyncHandler(async (req, res, nest) => {
+  const username = req.user.username;
+  const user = await User.findOne({ username });
+  res.status(200).json({
+    data: user,
+  });
+});

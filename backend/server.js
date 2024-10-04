@@ -11,8 +11,10 @@ const ApiError = require("./utils/apiError");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const authRoute = require("./routes/authRoute");
 const userRoute = require("./routes/userRoute");
+const chatRoute = require("./routes/chatRoute");
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/chat", chatRoute);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`can't find this page ${req.url}`, 404));
