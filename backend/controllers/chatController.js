@@ -58,8 +58,8 @@ exports.fetchChats = asyncHandler(async (req, res, next) => {
 });
 
 exports.createGroup = asyncHandler(async (req, res, next) => {
-  const { groupName, users } = req.body;
-  if (!groupName || !users) {
+  const { chatName, users } = req.body;
+  if (!chatName || !users) {
     return next(new ApiError("Please fill all the fields", 400));
   }
   const validUsers = [];
@@ -71,8 +71,9 @@ exports.createGroup = asyncHandler(async (req, res, next) => {
     }
     validUsers.push(validUser._id);
   }
+  validUsers.push(req.user._id);
   const group = await Chat.create({
-    chatName: groupName,
+    chatName: chatName,
     isGroup: true,
     users: validUsers,
     groupAdmin: req.user._id,
@@ -94,18 +95,6 @@ exports.renameGroup = asyncHandler(async (req, res, next) => {
   )
     .populate("users", "-password")
     .populate("groupAdmin", "-password");
-
-  res.status(200).json(updatedChat);
-});
-
-exports.RemoveGroup = asyncHandler(async (req, res) => {
-  const { chatId, userId } = req.body;
-
-  const updatedChat = await Chat.findByIdAndUpdate(
-    chatId,
-    { $pull: { users: userId } },
-    { new: true }
-  ).populate("users", "-password");
 
   res.status(200).json(updatedChat);
 });
